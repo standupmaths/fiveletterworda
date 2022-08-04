@@ -1,3 +1,7 @@
+{
+"wordlist": 
+    "wordle",
+        "5c": [
             "aahed",
             "aalii",
             "aargh",
@@ -12972,3 +12976,6 @@
             "zygon",
             "zymes",
             "zymic"
+    ],
+    "origin_URI": "https://www.nytimes.com/games-assets/v2/wordle.08c704465294706667bf2e5a1b85fa3c0087854f.js"
+}
