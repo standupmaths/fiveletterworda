@@ -1,110 +1,96 @@
-import time
-start_time = time.time()
+import functools
+import string
 
-filestub = '/Users/mattparker/Dropbox/python/five_letter_words/'
+# Read all words
+with open("words_alpha.txt") as f:
+    words = [word.strip() for word in f]
 
-def load_words():
-    words_txt = '/Users/mattparker/Dropbox/python/five_letter_words/words_alpha.txt'
-    with open(words_txt) as word_file:
-        valid_words = list(word_file.read().split())
-    return valid_words
+print(f"Total words: {len(words):,}")
 
-word_length = 5
+# Keep only words with length 5
+words_len5 = [word for word in words if len(word) == 5]
 
-word_length2 = word_length*2
-word_length4 = word_length2*2
-word_length5 = word_length4 + word_length
+print(f"Words with length 5: {len(words_len5):,}")
 
-# number of scanA increases per progress report
-stepgap = 1000
+# Remove words with repeating alphabets
+words_len5_dedup = [word for word in words_len5 if len(set(word)) == 5]
 
-# Yes, that is the alphabet. In the default order python makes a list in. Weird.
-alphabet = ['f', 'g', 'o', 'q', 't', 'b', 'y', 'h', 'r', 'u', 'j', 'w', 'i', 'p', 's', 'd', 'l', 'e', 'k', 'm', 'n', 'v', 'z', 'c', 'a', 'x']
+print(f"Words with length 5 without repeating alphabets: {len(words_len5_dedup):,}")
 
-# I could be clever and write this to be dynamic
-# but for now I'll hard code everything assuming five words
-number_of_sets = 5
+# Remove anagrams
+words_len5_alpha_set = set()
+words_len5_filtered = set()
+for word in words_len5_dedup:
+    alphabets = str(sorted(word))
+    if alphabets not in words_len5_alpha_set:
+        words_len5_alpha_set.add(alphabets)
+        words_len5_filtered.add(word)
 
-english_words = load_words()
+print(
+    f"Words with length 5 without repeating alphabets or anagrams: {len(words_len5_filtered):,}"
+)
 
-print(f"{len(english_words)} words in total")
+# Create a dict of alphabet -> words that contain this alphabet
+alphabet_words = {alphabet: set() for alphabet in string.ascii_lowercase}
 
-fl_words = []
+for word in words_len5_filtered:
+    for alphabet in word:
+        alphabet_words[alphabet].add(word)
 
-for w in english_words:
-    if len(w) == word_length:
-        fl_words.append(w)
+# Get list of alphabets in increasing order of frequency
+alphabets_sorted = []
+for k, v in alphabet_words.items():
+    alphabets_sorted.append((len(v), k))
+alphabets_sorted.sort()
 
-print(f"{len(fl_words)} words have {word_length} letters")
+for count, alphabet in alphabets_sorted:
+    print(alphabet, f"{count:,}")
 
 
-word_sets = []
+# Function to find combinations
+#   - alphabets: alphabets not used till now
+#   - words: valid words using the above alphabets
+@functools.lru_cache(maxsize=1024)
+def find_combos(alphabets, words):
+    if not words or not alphabets:
+        return []
+    if len(alphabets) == 5:
+        # 5 alphabets left, there can be at max 1 word since we've removed anagrams
+        return [[word] for word in words]
 
-unique_fl_words = []
-for w in fl_words:
-    unique_letters = set(w)
-    if len(unique_letters) == word_length:
-        if unique_letters not in word_sets:
-            word_sets.append(unique_letters)
-            unique_fl_words.append(w)
+    ret = []
+    # Consider the least frequent alphabet that we've not used till now
+    for count, alphabet in alphabets_sorted:
+        if alphabet in alphabets:
+            # Consider all words containing this alphabet which are in the `words` set
+            for word in alphabet_words[alphabet]:
+                if word in words:
+                    # Create a set without any words which contains alphabets in the current word
+                    rem = words
+                    for alphabet in word:
+                        rem -= alphabet_words[alphabet]
 
-number_of_words = len(unique_fl_words)
+                    # Recursion!
+                    ret += [
+                        [word] + rest
+                        for rest in find_combos(frozenset(alphabets - set(word)), rem)
+                    ]
+            break
 
-print(f"{number_of_words} words have a unique set of {word_length} letters")
+    return ret
 
-doubleword_sets = []
-doubleword_words = []
 
-scanA = 0
-while scanA < number_of_words-1:
-    scanB = scanA + 1
-    while scanB < number_of_words:
-        give_it_a_try = word_sets[scanA] | word_sets[scanB]
-        if len(give_it_a_try) == word_length2:
-            doubleword_sets.append(give_it_a_try)
-            doubleword_words.append([unique_fl_words[scanA], unique_fl_words[scanB]])
-        scanB += 1
-    scanA += 1
-
-number_of_doublewords = len(doubleword_sets)
-
-print(f"we found {number_of_doublewords} combos")
-
-counter = 0
-
-success_found = []
-
-scanA = 0
-print(f"starting at position {scanA}")
-
-while scanA < number_of_doublewords-1:
-    if scanA % stepgap == 0:
-        print(f"Up to {scanA} after {time.time() - start_time} seconds.")
-
-    scanB = scanA + 1
-    while scanB < number_of_doublewords:
-        give_it_a_try = doubleword_sets[scanA] | doubleword_sets[scanB]
-        if len(give_it_a_try) == word_length4:
-            scanC = 0
-            while scanC < number_of_words:
-                final_go = give_it_a_try | word_sets[scanC]
-                if len(final_go) == word_length5:
-                    success = doubleword_words[scanA] + doubleword_words[scanB]
-                    success.append(unique_fl_words[scanC])
-                    success.sort()
-                    if success not in success_found:
-                        success_found.append(success)
-                        print(success)
-                scanC += 1
-            counter += 1
-        scanB += 1
-    scanA += 1
-
-print(f"Damn, we had {len(success_found)} successful finds!")
-print(f"That took {time.time() - start_time} seconds")
-
-print("Here they all are:")
-for i in success_found:
-    print(i)
-
-print("DONE")
+combos = []
+total = 0
+for alphabet in string.ascii_lowercase:
+    ret = find_combos(
+        frozenset(set(string.ascii_lowercase) - {alphabet}),
+        frozenset(words_len5_filtered - alphabet_words[alphabet]),
+    )
+    combos += ret
+    total += len(ret)
+    print(f"Number of combos without {alphabet}: {len(ret):,}")
+print(f"Total combos: {total:,}")
+print("\nCombos:")
+for combo in combos:
+    print(combo)
