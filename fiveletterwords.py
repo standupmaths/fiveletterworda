@@ -1,10 +1,13 @@
 import time
+#from pyannotate_runtime import collect_types
+#collect_types.start()
+
 start_time = time.time()
 
-filestub = '/Users/mattparker/Dropbox/python/five_letter_words/'
+#filestub = '/Users/mattparker/Dropbox/python/five_letter_words/'
 
 def load_words():
-    words_txt = '/Users/mattparker/Dropbox/python/five_letter_words/words_alpha.txt'
+    words_txt = '/mnt/tmp/words_alpha.txt'
     with open(words_txt) as word_file:
         valid_words = list(word_file.read().split())
     return valid_words
@@ -99,12 +102,14 @@ while scanA < number_of_doublewords-1:
             counter += 1
         scanB += 1
     scanA += 1
-
+#collect_types.stop()
+#collect_types.dump_stats(types)
 print(f"Damn, we had {len(success_found)} successful finds!")
 print(f"That took {time.time() - start_time} seconds")
 
 print("Here they all are:")
 for i in success_found:
     print(i)
+
 
 print("DONE")
