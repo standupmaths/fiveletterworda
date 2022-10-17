@@ -1,0 +1,7 @@
+*.o
+*.so
+*.c
+build/
+types_dump
+words_alpha.txt
+
