@@ -8,6 +8,7 @@ try:
     #filestub = '/Users/mattparker/Dropbox/python/five_letter_words/'
 
     def load_words():
+        # I used a ramdisk to speed up loading
         words_txt = '/mnt/tmp/words_alpha.txt'
         with open(words_txt) as word_file:
             valid_words = list(word_file.read().split())
