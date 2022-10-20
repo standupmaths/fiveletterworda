@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+from typing import Final
 import time
 start_time = time.time()
 
@@ -6,7 +8,7 @@ filestub = '/Users/mattparker/Dropbox/python/five_letter_words/'
 def load_words():
     words_txt = f'{filestub}words_alpha.txt'
     with open(words_txt) as word_file:
-        valid_words = list(word_file.read().split())
+        valid_words = word_file.read().split()
     return valid_words
 
 word_length = 5
