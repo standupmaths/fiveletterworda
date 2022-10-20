@@ -2,16 +2,15 @@
 from typing import Final
 from time import time
 
-filestub: Final = '/Users/mattparker/Dropbox/python/five_letter_words/'
-
 
 def load_words():
+    filestub = '/Users/mattparker/Dropbox/python/five_letter_words/'
     words_txt = f'{filestub}words_alpha.txt'
     with open(words_txt, encoding='UTF-8') as word_file:
         valid_words = word_file.read().split()
     return valid_words
 
-
+# global mutables are a nightmare!
 word_length: Final = 5
 
 word_length2: Final = word_length * 2
@@ -19,11 +18,9 @@ word_length4: Final = word_length2 * 2
 word_length5: Final = word_length4 + word_length
 
 def main():
+    # this is where the program actually begins (after the header/definitions),
+    # so it's fair to measure time from here
     start_time: Final = time()
-
-    # I could be clever and write this to be dynamic
-    # but for now I'll hard code everything assuming five words
-    number_of_sets: Final = 5
 
     english_words: Final = load_words()
 
@@ -34,22 +31,21 @@ def main():
     print(f"{len(fl_words)} words have {word_length} letters")
 
 
-    word_sets: list[set[str]] = []
-    unique_fl_words: list[str] = []
+    word_sets: Final[list[set[str]]] = []
+    unique_fl_words: Final[list[str]] = []
 
     for w in fl_words:
         unique_letters = set(w)
-        if len(unique_letters) == word_length:
-            if unique_letters not in word_sets:
-                word_sets.append(unique_letters)
-                unique_fl_words.append(w)
+        if len(unique_letters) == word_length and unique_letters not in word_sets:
+            word_sets.append(unique_letters)
+            unique_fl_words.append(w)
 
-    number_of_words = len(unique_fl_words)
+    number_of_words: Final = len(unique_fl_words)
 
     print(f"{number_of_words} words have a unique set of {word_length} letters")
 
-    doubleword_sets: list[set[str]] = []
-    doubleword_words: list[list[str]] = []
+    doubleword_sets: Final[list[set[str]]] = []
+    doubleword_words: Final[list[list[str]]] = []
 
     scanA = 0
     while scanA + 1 < number_of_words:
