@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 from typing import Final
 from time import time
-start_time: Final = time()
 
-filestub = '/Users/mattparker/Dropbox/python/five_letter_words/'
+filestub: Final = '/Users/mattparker/Dropbox/python/five_letter_words/'
 
 
 def load_words():
@@ -19,95 +18,94 @@ word_length2: Final = word_length * 2
 word_length4: Final = word_length2 * 2
 word_length5: Final = word_length4 + word_length
 
-stepgap = 1000
-"""number of `scanA` increases per progress report"""
+def main():
+    start_time: Final = time()
 
-# Yes, that is the alphabet. In the default order python makes a list in. Weird.
-alphabet = [
-    'f', 'g', 'o', 'q', 't', 'b', 'y', 'h', 'r', 'u', 'j', 'w', 'i',
-    'p', 's', 'd', 'l', 'e', 'k', 'm', 'n', 'v', 'z', 'c', 'a', 'x'
-]
+    # I could be clever and write this to be dynamic
+    # but for now I'll hard code everything assuming five words
+    number_of_sets: Final = 5
 
-# I could be clever and write this to be dynamic
-# but for now I'll hard code everything assuming five words
-number_of_sets = 5
+    english_words: Final = load_words()
 
-english_words = load_words()
+    print(f"{len(english_words)} words in total")
 
-print(f"{len(english_words)} words in total")
+    fl_words: Final = [w for w in english_words if len(w) == word_length]
 
-fl_words: Final = [w for w in english_words if len(w) == word_length]
-
-print(f"{len(fl_words)} words have {word_length} letters")
+    print(f"{len(fl_words)} words have {word_length} letters")
 
 
-word_sets: list[set[str]] = []
-unique_fl_words: list[str] = []
+    word_sets: list[set[str]] = []
+    unique_fl_words: list[str] = []
 
-for w in fl_words:
-    unique_letters = set(w)
-    if len(unique_letters) == word_length:
-        if unique_letters not in word_sets:
-            word_sets.append(unique_letters)
-            unique_fl_words.append(w)
+    for w in fl_words:
+        unique_letters = set(w)
+        if len(unique_letters) == word_length:
+            if unique_letters not in word_sets:
+                word_sets.append(unique_letters)
+                unique_fl_words.append(w)
 
-number_of_words = len(unique_fl_words)
+    number_of_words = len(unique_fl_words)
 
-print(f"{number_of_words} words have a unique set of {word_length} letters")
+    print(f"{number_of_words} words have a unique set of {word_length} letters")
 
-doubleword_sets: list[set[str]] = []
-doubleword_words: list[list[str]] = []
+    doubleword_sets: list[set[str]] = []
+    doubleword_words: list[list[str]] = []
 
-scanA = 0
-while scanA + 1 < number_of_words:
-    scanB = scanA + 1
-    while scanB < number_of_words:
-        give_it_a_try = word_sets[scanA] | word_sets[scanB]
-        if len(give_it_a_try) == word_length2:
-            doubleword_sets.append(give_it_a_try)
-            doubleword_words.append([unique_fl_words[scanA], unique_fl_words[scanB]])
-        scanB += 1
-    scanA += 1
+    scanA = 0
+    while scanA + 1 < number_of_words:
+        scanB = scanA + 1
+        while scanB < number_of_words:
+            give_it_a_try = word_sets[scanA] | word_sets[scanB]
+            if len(give_it_a_try) == word_length2:
+                doubleword_sets.append(give_it_a_try)
+                doubleword_words.append([unique_fl_words[scanA], unique_fl_words[scanB]])
+            scanB += 1
+        scanA += 1
 
-number_of_doublewords = len(doubleword_sets)
+    number_of_doublewords = len(doubleword_sets)
 
-print(f"we found {number_of_doublewords} combos")
+    print(f"we found {number_of_doublewords} combos")
 
-counter = 0
+    success_found: list[list[str]] = []
 
-success_found: list[list[str]] = []
+    scanA = 0
+    print(f"starting at position {scanA}")
 
-scanA = 0
-print(f"starting at position {scanA}")
+    stepgap: Final = 1000
+    """number of `scanA` increases per progress report"""
 
-while scanA < number_of_doublewords - 1:
-    if scanA % stepgap == 0:
-        print(f"Up to {scanA} after {time() - start_time} seconds.")
+    counter = 0
+    while scanA < number_of_doublewords - 1:
+        if scanA % stepgap == 0:
+            print(f"Up to {scanA} after {time() - start_time} seconds.")
 
-    scanB = scanA + 1
-    while scanB < number_of_doublewords:
-        give_it_a_try = doubleword_sets[scanA] | doubleword_sets[scanB]
-        if len(give_it_a_try) == word_length4:
-            scanC = 0
-            while scanC < number_of_words:
-                final_go = give_it_a_try | word_sets[scanC]
-                if len(final_go) == word_length5:
-                    success = doubleword_words[scanA] + doubleword_words[scanB]
-                    success.append(unique_fl_words[scanC])
-                    success.sort()
-                    if success not in success_found:
-                        success_found.append(success)
-                        print(success)
-                scanC += 1
-            counter += 1
-        scanB += 1
-    scanA += 1
+        scanB = scanA + 1
+        while scanB < number_of_doublewords:
+            give_it_a_try = doubleword_sets[scanA] | doubleword_sets[scanB]
+            if len(give_it_a_try) == word_length4:
+                scanC = 0
+                while scanC < number_of_words:
+                    final_go = give_it_a_try | word_sets[scanC]
+                    if len(final_go) == word_length5:
+                        success = doubleword_words[scanA] + doubleword_words[scanB]
+                        success.append(unique_fl_words[scanC])
+                        success.sort()
+                        if success not in success_found:
+                            success_found.append(success)
+                            print(success)
+                    scanC += 1
+                counter += 1
+            scanB += 1
+        scanA += 1
 
-print(f"Damn, we had {len(success_found)} successful finds!")
-print(f"That took {time() - start_time} seconds")
+    print(f"Damn, we had {len(success_found)} successful finds!")
+    print(f"That took {time() - start_time} seconds")
 
-print("Here they all are:")
-for i in success_found:
-    print(i)
+    print("Here they all are:")
+    for i in success_found:
+        print(i)
 
-print("DONE")
+    print("DONE")
+
+if __name__ == '__main__':
+    main()
