@@ -19,8 +19,8 @@ word_length2 = word_length * 2
 word_length4 = word_length2 * 2
 word_length5 = word_length4 + word_length
 
-# number of scanA increases per progress report
 stepgap = 1000
+"""number of `scanA` increases per progress report"""
 
 # Yes, that is the alphabet. In the default order python makes a list in. Weird.
 alphabet = [
