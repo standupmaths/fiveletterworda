@@ -54,7 +54,7 @@ number_of_words = len(unique_fl_words)
 print(f"{number_of_words} words have a unique set of {word_length} letters")
 
 doubleword_sets: list[set[str]] = []
-doubleword_words: list[str] = []
+doubleword_words: list[list[str]] = []
 
 scanA = 0
 while scanA + 1 < number_of_words:
@@ -63,8 +63,7 @@ while scanA + 1 < number_of_words:
         give_it_a_try = word_sets[scanA] | word_sets[scanB]
         if len(give_it_a_try) == word_length2:
             doubleword_sets.append(give_it_a_try)
-            doubleword_words.append(
-                [unique_fl_words[scanA], unique_fl_words[scanB]])
+            doubleword_words.append([unique_fl_words[scanA], unique_fl_words[scanB]])
         scanB += 1
     scanA += 1
 
@@ -74,7 +73,7 @@ print(f"we found {number_of_doublewords} combos")
 
 counter = 0
 
-success_found = []
+success_found: list[list[str]] = []
 
 scanA = 0
 print(f"starting at position {scanA}")
