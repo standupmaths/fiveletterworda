@@ -23,8 +23,10 @@ word_length5 = word_length4 + word_length
 stepgap = 1000
 
 # Yes, that is the alphabet. In the default order python makes a list in. Weird.
-alphabet = ['f', 'g', 'o', 'q', 't', 'b', 'y', 'h', 'r', 'u', 'j', 'w',
-            'i', 'p', 's', 'd', 'l', 'e', 'k', 'm', 'n', 'v', 'z', 'c', 'a', 'x']
+alphabet = [
+    'f', 'g', 'o', 'q', 't', 'b', 'y', 'h', 'r', 'u', 'j', 'w', 'i',
+    'p', 's', 'd', 'l', 'e', 'k', 'm', 'n', 'v', 'z', 'c', 'a', 'x'
+]
 
 # I could be clever and write this to be dynamic
 # but for now I'll hard code everything assuming five words
