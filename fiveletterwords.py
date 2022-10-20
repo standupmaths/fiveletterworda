@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from typing import Final
-import time
-start_time = time.time()
+from time import time
+start_time: Final = time()
 
 filestub = '/Users/mattparker/Dropbox/python/five_letter_words/'
 
@@ -15,9 +15,9 @@ def load_words():
 
 word_length: Final = 5
 
-word_length2 = word_length * 2
-word_length4 = word_length2 * 2
-word_length5 = word_length4 + word_length
+word_length2: Final = word_length * 2
+word_length4: Final = word_length2 * 2
+word_length5: Final = word_length4 + word_length
 
 stepgap = 1000
 """number of `scanA` increases per progress report"""
@@ -36,7 +36,7 @@ english_words = load_words()
 
 print(f"{len(english_words)} words in total")
 
-fl_words = [w for w in english_words if len(w) == word_length]
+fl_words: Final = [w for w in english_words if len(w) == word_length]
 
 print(f"{len(fl_words)} words have {word_length} letters")
 
@@ -82,7 +82,7 @@ print(f"starting at position {scanA}")
 
 while scanA < number_of_doublewords - 1:
     if scanA % stepgap == 0:
-        print(f"Up to {scanA} after {time.time() - start_time} seconds.")
+        print(f"Up to {scanA} after {time() - start_time} seconds.")
 
     scanB = scanA + 1
     while scanB < number_of_doublewords:
@@ -104,7 +104,7 @@ while scanA < number_of_doublewords - 1:
     scanA += 1
 
 print(f"Damn, we had {len(success_found)} successful finds!")
-print(f"That took {time.time() - start_time} seconds")
+print(f"That took {time() - start_time} seconds")
 
 print("Here they all are:")
 for i in success_found:
