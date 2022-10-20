@@ -4,7 +4,7 @@ start_time = time.time()
 filestub = '/Users/mattparker/Dropbox/python/five_letter_words/'
 
 def load_words():
-    words_txt = '/Users/mattparker/Dropbox/python/five_letter_words/words_alpha.txt'
+    words_txt = f'{filestub}words_alpha.txt'
     with open(words_txt) as word_file:
         valid_words = list(word_file.read().split())
     return valid_words
@@ -29,11 +29,7 @@ english_words = load_words()
 
 print(f"{len(english_words)} words in total")
 
-fl_words = []
-
-for w in english_words:
-    if len(w) == word_length:
-        fl_words.append(w)
+fl_words = [w for w in english_words if len(w) == word_length]
 
 print(f"{len(fl_words)} words have {word_length} letters")
 
@@ -56,7 +52,7 @@ doubleword_sets = []
 doubleword_words = []
 
 scanA = 0
-while scanA < number_of_words-1:
+while scanA + 1 < number_of_words:
     scanB = scanA + 1
     while scanB < number_of_words:
         give_it_a_try = word_sets[scanA] | word_sets[scanB]
